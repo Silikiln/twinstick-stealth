@@ -2,25 +2,45 @@
 using System.Collections;
 
 public class MoveLight : MonoBehaviour {
-    private Transform pos;
-    private Rigidbody vel;
-    private float delta = 1f;
+
+    private Rigidbody rb;
+    public float runSpeed = 0f;
+    public float normalSpeed = 0f;
+    public float creepSpeed = 0f;
 
 	// Use this for initialization
 	void Start () {
-        pos = this.GetComponent<Transform>();
-        vel = this.GetComponent<Rigidbody>();
+        rb = this.GetComponent<Rigidbody>();
 	}
 	
+    //called based on time use for physics
+    void FixedUpdate(){
+        //Time for physics
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
+        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized;
+        rb.velocity = Vector3.zero;
+
+        //if any of the movement buttons(joysticks...) are being moved
+        if(moveHorizontal != 0 || moveVertical != 0){
+            //check if any modifiers are being used
+            if (Input.GetKey(KeyCode.LeftShift)){
+                //Use sprinting speed
+                rb.velocity = movement * runSpeed;
+            }
+            else if (Input.GetKey(KeyCode.Space)){
+                //use creeping speed
+                rb.velocity = movement * creepSpeed;
+            }
+            else {
+                //use normal move speed
+                rb.velocity = movement * normalSpeed;
+            }
+        }
+    }
+
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKey(KeyCode.W))
-            vel.AddForce(new Vector3(0, 0, delta));
-        if (Input.GetKey(KeyCode.S))
-            vel.AddForce(new Vector3(0, 0, -delta));
-        if (Input.GetKey(KeyCode.A))
-            vel.AddForce(new Vector3(-delta, 0, 0));
-        if (Input.GetKey(KeyCode.D))
-            vel.AddForce(new Vector3(delta, 0, 0));
+
 	}
 }
