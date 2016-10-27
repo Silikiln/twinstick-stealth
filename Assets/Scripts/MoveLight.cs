@@ -42,7 +42,7 @@ public class MoveLight : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        var distance = (transform.position.y - Camera.main.transform.position.y) * 7;
+        var distance = (transform.position.y - Camera.main.transform.position.y) * Camera.main.transform.position.y;
         var position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
         position = Camera.main.ScreenToWorldPoint(position);
         transform.LookAt(position);
