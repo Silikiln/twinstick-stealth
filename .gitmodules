@@ -2,7 +2,3 @@
 	path = Assets/Editor/Silikiln Lib
 	url = https://github.com/Silikiln/unity-library
 	branch = editor
-[submodule "Assets/Scripts/Silikiln Lib"]
-	path = Assets/Scripts/Silikiln Lib
-	url = https://github.com/Silikiln/unity-library
-	branch = scripts

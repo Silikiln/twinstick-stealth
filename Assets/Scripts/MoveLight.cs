@@ -6,6 +6,7 @@ public class MoveLight : MonoBehaviour {
     private Rigidbody rb;
     public float runSpeed = 0f;
     public float normalSpeed = 0f;
+    public float defaultRotationX;
 
     // Use this for initialization
     void Start () {
@@ -17,7 +18,7 @@ public class MoveLight : MonoBehaviour {
         //Time for physics
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3(moveHorizontal, moveVertical, 0.0f).normalized;
+        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized;
         rb.velocity = Vector3.zero;
 
         //if any of the movement buttons(toDO: controller support) are being moved
@@ -28,10 +29,12 @@ public class MoveLight : MonoBehaviour {
 
         //This rotates the player to face the mouse(toDO: controller support)
         Vector2 mousePosition = Input.mousePosition;
-        var distance = (transform.position.z - Camera.main.transform.position.z);
+        var distance = (transform.position.y - Camera.main.transform.position.y);
         var screenPosition = new Vector3(mousePosition.x, mousePosition.y, distance);
         screenPosition = Camera.main.ScreenToWorldPoint(screenPosition);
-        transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2((screenPosition.y - transform.position.y), (screenPosition.x - transform.position.x)) * Mathf.Rad2Deg - 90);
+        Debug.Log("ScreenPos "+ screenPosition);
+        transform.eulerAngles = new Vector3(defaultRotationX, 0.0f, Mathf.Atan2((screenPosition.y - transform.position.y), (screenPosition.x - transform.position.x)) * Mathf.Rad2Deg - 90);
+        //Debug.Log(transform.eulerAngles);
 
     }
 
