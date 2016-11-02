@@ -7,14 +7,14 @@ public class CameraStuff : MonoBehaviour {
     private Vector3 targetPosition;
 
     //init camera vars
-    private float distanceZ;
+    private float distanceY;
     public float cameraSpeed = 5f;
     public float cameraClampModX = 2f;
-    public float cameraClampModY = 2f;
+    public float cameraClampModZ = 2f;
 
     void Start()
     {
-        distanceZ = transform.position.z;
+        distanceY = transform.position.y;
     }
 
     void Update()
@@ -25,17 +25,17 @@ public class CameraStuff : MonoBehaviour {
         //determine how the camera should move(toDO: add joystick)
         if (Input.GetKey(KeyCode.LeftShift)){
             //manual camera movement
-            transform.position += new Vector3(Input.GetAxisRaw("Mouse X") * Time.deltaTime * cameraSpeed, Input.GetAxisRaw("Mouse Y") * Time.deltaTime * cameraSpeed, 0.0f);
+            transform.position += new Vector3(Input.GetAxisRaw("Mouse X") * Time.deltaTime * cameraSpeed, 0.0f, Input.GetAxisRaw("Mouse Y") * Time.deltaTime * cameraSpeed);
 
             //Bound the movement based on player position
             transform.position = new Vector3(
-                Mathf.Clamp(transform.position.x, targetPosition.x - cameraClampModX, targetPosition.x + cameraClampModX), 
-                Mathf.Clamp(transform.position.y, targetPosition.y - cameraClampModY, targetPosition.y + cameraClampModY),
-                distanceZ);
+                Mathf.Clamp(transform.position.x, targetPosition.x - cameraClampModX, targetPosition.x + cameraClampModX),
+                distanceY,
+                Mathf.Clamp(transform.position.z, targetPosition.z - cameraClampModZ, targetPosition.z + cameraClampModZ));
         }
         else{
             //auto movement
-            transform.position = new Vector3(targetPosition.x, targetPosition.y, distanceZ);
+            transform.position = new Vector3(targetPosition.x, distanceY, targetPosition.z);
         }
     }
 }
