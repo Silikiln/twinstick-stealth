@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class MoveLight : MonoBehaviour {
 
@@ -7,13 +8,27 @@ public class MoveLight : MonoBehaviour {
     public float runSpeed = 0f;
     public float normalSpeed = 0f;
     public float defaultRotationX;
+    public float perceptionRadius;
+    public float soundCheckRate;
+
+    private int soundLayerMaskIndex = 1 << 8;
 
     // Use this for initialization
     void Start () {
         rb = this.GetComponent<Rigidbody>();
+        StartCoroutine(SoundCheckRepeat(soundCheckRate));
     }
-	
-    //called based on time use for physics
+
+    private IEnumerator SoundCheckRepeat(float soundCheckRate)
+    {
+        while (true){
+            SoundCheck();
+            //Debug.Log("Sound Emit: " + Time.time);
+            yield return new WaitForSeconds(soundCheckRate);
+        }
+    }
+
+    //called based on time use for physics(50 times per second)
     void FixedUpdate(){
         //Time for physics
         float moveHorizontal = Input.GetAxis("Horizontal");
@@ -31,15 +46,35 @@ public class MoveLight : MonoBehaviour {
         Vector3 mousePosition = Input.mousePosition;
         mousePosition.z = mousePosition.y;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        //Debug.Log(Input.mousePosition + " -> " + mousePosition);
         transform.eulerAngles = new Vector3(defaultRotationX, 0, Mathf.Atan2((mousePosition.z - transform.position.z), (mousePosition.x - transform.position.x)) * Mathf.Rad2Deg - 90);
-        //Debug.Log(transform.eulerAngles);
 
     }
 
-	// Update is called once per frame
-	void Update () {
+    //toDo, investigate using a layermask to selectively ignore colliders when casting ray(anything that is not the player)
+    private void SoundCheck()
+    {
+        //get a list of all colliders in the pulse
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, perceptionRadius, soundLayerMaskIndex);
+        foreach (Collider col in hitColliders)
+        {
+            Debug.Log("HIT COLLIDER");
+            if (col.gameObject.tag == "SoundObj")
+            {
+                //toDo use sendMessage to call a function on the player if hit
+                Debug.Log("Detected SoundObj: " + col.gameObject.name);
 
+                //use sendMessage to call the play soundWave function
+                col.gameObject.SendMessage("DisplaySoundWaves");
+            }
+        }
+
+    }
+
+    //use cyan for sounds
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, perceptionRadius);
     }
 
 }
