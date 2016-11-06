@@ -43,18 +43,11 @@ public class MoveLight : MonoBehaviour {
         }
 
         //This rotates the player to face the mouse(toDO: controller support)
-<<<<<<< HEAD
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
-        //Debug.Log(Input.mousePosition + " -> " + mousePosition);
-        transform.eulerAngles = new Vector3(defaultRotationX, 0, Mathf.Atan2((mousePosition.z - transform.position.z), (mousePosition.x - transform.position.x)) * Mathf.Rad2Deg - 90);
-        //Debug.Log(transform.eulerAngles);
-=======
         Vector3 mousePosition = Input.mousePosition;
         mousePosition.z = mousePosition.y;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
         transform.eulerAngles = new Vector3(defaultRotationX, 0, Mathf.Atan2((mousePosition.z - transform.position.z), (mousePosition.x - transform.position.x)) * Mathf.Rad2Deg - 90);
 
->>>>>>> feature/it2
     }
 
     //toDo, investigate using a layermask to selectively ignore colliders when casting ray(anything that is not the player)
