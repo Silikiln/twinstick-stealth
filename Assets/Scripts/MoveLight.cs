@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class MoveLight : MonoBehaviour {
 
@@ -23,7 +24,6 @@ public class MoveLight : MonoBehaviour {
     {
         while (true){
             SoundCheck();
-            //Debug.Log("Sound Emit: " + Time.time);
             yield return new WaitForSeconds(soundCheckRate);
         }
     }
@@ -50,20 +50,16 @@ public class MoveLight : MonoBehaviour {
 
     }
 
-    //toDo, investigate using a layermask to selectively ignore colliders when casting ray(anything that is not the player)
     private void SoundCheck()
     {
         //get a list of all colliders in the pulse
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, perceptionRadius, soundLayerMaskIndex);
-        foreach (Collider col in hitColliders)
-        {
-            Debug.Log("HIT COLLIDER");
-            if (col.gameObject.tag == "SoundObj")
-            {
-                //toDo use sendMessage to call a function on the player if hit
-                Debug.Log("Detected SoundObj: " + col.gameObject.name);
 
-                //use sendMessage to call the play soundWave function
+        //toDO:investigate killing the soundwaves no longer in perception radius
+
+        foreach (Collider col in hitColliders){
+            if (col.gameObject.tag == "SoundObj"){
+                Debug.Log("Detected SoundObj: " + col.gameObject.name);
                 col.gameObject.SendMessage("DisplaySoundWaves");
             }
         }

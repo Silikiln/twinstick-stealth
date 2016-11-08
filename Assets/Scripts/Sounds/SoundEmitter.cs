@@ -3,7 +3,6 @@ using System.Collections;
 
 public class SoundEmitter : MonoBehaviour {
 
-    public float maxRadius;
     public AudioSource soundToEmit;
     public GameObject wavePrefab;
     public float waveLinger;
