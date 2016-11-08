@@ -5,8 +5,10 @@ public class SoundEmitter : MonoBehaviour {
 
     public float maxRadius;
     public AudioSource soundToEmit;
-    public float soundWaveDuration;
     public GameObject wavePrefab;
+    public float waveLinger;
+
+    //testing params
     public float testingMoveSpeed;
     public Vector3 testPoint1;
     public Vector3 testPoint2;
@@ -15,9 +17,9 @@ public class SoundEmitter : MonoBehaviour {
     private LayerMask startMask;
     private float soundDetectionStart = 0f;
     private float soundDetectionEnd = 0f;
-    private bool allowSound = true;
     private bool displayingWaves = false;
     private GameObject soundWaves;
+    private float soundWaveDuration;
     //play sound
     //when sound is played allow the sound collider to be detected
     //if a collision is found with the players perception radius, display sound waves at location.
@@ -27,6 +29,7 @@ public class SoundEmitter : MonoBehaviour {
     {
         //get the starting LayerMask
         startMask = gameObject.layer;
+        soundWaveDuration = soundToEmit.clip.length;
     }
 
     void Update()
@@ -50,16 +53,15 @@ public class SoundEmitter : MonoBehaviour {
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.T) && allowSound)
+        if (Input.GetKeyDown(KeyCode.T) && !soundToEmit.isPlaying)
         {
             //play sound
             soundToEmit.Play();
-            //allow the sound collider to be detected
-            gameObject.layer = LayerMask.NameToLayer("SoundMask");
             //set the ending time of when the gameobject can be detected
             soundDetectionStart = Time.time;
-            soundDetectionEnd = soundDetectionStart + soundWaveDuration;
-            allowSound = false;
+            soundDetectionEnd = soundDetectionStart + soundWaveDuration + waveLinger;
+            //allow the sound collider to be detected
+            gameObject.layer = LayerMask.NameToLayer("SoundMask");
 
             Debug.Log("Sound Played. StartTime: " + soundDetectionStart + " EndTime: " + soundDetectionEnd);
         }
@@ -69,12 +71,16 @@ public class SoundEmitter : MonoBehaviour {
             gameObject.layer = startMask;
             soundDetectionStart = 0;
             soundDetectionEnd = 0;
-            allowSound = true;
-            Destroy(soundWaves);
-            displayingWaves = false;
+            KillSound();
             Debug.Log("Sound can be played again");
         }
 
+    }
+
+    private void KillSound()
+    {
+        Destroy(soundWaves);
+        displayingWaves = false;
     }
 
     private void DisplaySoundWaves()
